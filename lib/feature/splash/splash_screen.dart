@@ -43,7 +43,8 @@ class SplashScreen extends StatelessWidget {
           });
           return _buildSplashBackground(context);
         } else if (snapshot.data == true) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            await Future.delayed(Duration(seconds: 2));
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
           });
           return _buildSplashBackground(context);
