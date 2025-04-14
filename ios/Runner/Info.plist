@@ -2,10 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Uygulama konumunuzu kullanırken konumunuzu bilmemiz gerekiyor.</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>Uygulama arka planda çalışırken konumunuzu bilmemiz gerekiyor.</string>
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Uygulama hem aktifken hem de arka planda konumunuzu kullanır.</string>
+<key>NSMotionUsageDescription</key>
+<string>Hareket verilerinize ihtiyacımız var.</string>
+<key>NSUserNotificationAlertUsageDescription</key>
+<string>Bu uygulama bildirim göndermek istiyor.</string>
+<key>UIBackgroundModes</key>
+<array>
+  <string>location</string>
+</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Marti Case Ra</string>
+	<string>Martı Case</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
