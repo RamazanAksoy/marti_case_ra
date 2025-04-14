@@ -48,4 +48,5 @@ extension LatLngExtension on LatLng {
 
 extension ImagePngPathExtension on String {
   String get toPNG => '${ApplicationConstants.IMAGE_ASSET_PATH}$this.png';
+  String get toJson => '${ApplicationConstants.JSON_ASSET_PATH}$this.json';
 }
