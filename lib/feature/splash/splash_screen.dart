@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 import 'package:marti_case_ra/core/extension/extension.dart';
-import 'package:marti_case_ra/feature/home/home_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../product/constans/images.dart';
+import '../../product/constans/product_constants.dart';
+import '../home/view/home_vew.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -61,7 +61,7 @@ class SplashScreen extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           color: Theme.of(context).appBarTheme.backgroundColor,
-          image: DecorationImage(fit: BoxFit.none, image: AssetImage(AppImages.instance.martiLogo)),
+          image: DecorationImage(fit: BoxFit.none, image: AssetImage(ProductConstants.instance.martiLogo)),
         ),
       ),
     );
