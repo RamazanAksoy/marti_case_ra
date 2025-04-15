@@ -13,7 +13,6 @@ class SplashScreen extends StatelessWidget {
 
   Future<bool> _initialize() async {
     try {
-      await bg.BackgroundGeolocation.start();
       if (await Permission.notification.isDenied) {
         await Permission.notification.request();
       }

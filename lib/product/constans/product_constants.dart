@@ -1,11 +1,11 @@
 import 'package:marti_case_ra/core/extension/extension.dart';
 
 class ProductConstants {
-  ProductConstants._init();
+  ProductConstants._();
   static ProductConstants? _instace;
-  static ProductConstants get instance => _instace ??= ProductConstants._init();
+  static ProductConstants get instance => _instace ??= ProductConstants._();
 
-  String martiLogo = 'marti'.toPNG;
-  String darkMapStyle = 'dark_map'.toJson;
-  String lightMapStyle = '[]';
+  final String martiLogo = 'marti'.toPNG;
+  final String darkMapStyle = 'dark_map'.toJson;
+  final String lightMapStyle = '[]';
 }
