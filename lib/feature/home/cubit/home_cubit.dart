@@ -14,7 +14,7 @@ import '../model/route_point.dart';
 import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  RouteRepository repository = RouteRepository();
+  final RouteRepository _repository = RouteRepository();
 
   HomeCubit()
     : super(
@@ -22,8 +22,13 @@ class HomeCubit extends Cubit<HomeState> {
       );
 
   void initialize() async {
-    await _configureBackgroundLocation();
-    await loadRoute();
+    await _loadRoute();
+    await _currentLocation();
+  }
+
+  Future<void> _currentLocation() async {
+    bg.Location currentLocation = await bg.BackgroundGeolocation.getCurrentPosition();
+    moveCamera(LatLng(currentLocation.coords.latitude, currentLocation.coords.longitude));
   }
 
   Future<void> themeChangeMap() async {
@@ -32,26 +37,15 @@ class HomeCubit extends Cubit<HomeState> {
     state.controller?.setMapStyle(isDark ? darkMapStyle : ProductConstants.instance.lightMapStyle);
   }
 
-  Future<void> _configureBackgroundLocation() async {
-    await bg.BackgroundGeolocation.ready(
-      bg.Config(
-        desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
-        distanceFilter: 1,
-        notification: bg.Notification(layout: 'notification_layout', actions: ['notificationButtonStop']),
-      ),
-    );
-
+  Future<void> _startBackgroundLocation() async {
+    await bg.BackgroundGeolocation.ready(bg.Config(distanceFilter: 1));
     bg.BackgroundGeolocation.start();
-
     bg.BackgroundGeolocation.onLocation((bg.Location location) async {
-      moveCamera(LatLng(location.coords.latitude, location.coords.longitude));
       if (state.isTracking) {
+        moveCamera(LatLng(location.coords.latitude, location.coords.longitude));
         final latlng = LatLng(location.coords.latitude, location.coords.longitude);
-
         if (state.routePoints.isEmpty || state.routePoints.last.toLatLng.distanceTo(latlng) >= 100.0) {
-          final address = await _getAddress(latlng.latitude, latlng.longitude);
-          final newPoint = RoutePoint(latitude: latlng.latitude, longitude: latlng.longitude, address: address, title: "Yeni Konum");
-
+          final newPoint = await _getRoutePoint(latlng.latitude, latlng.longitude);
           final updatedPoints = [...state.routePoints, newPoint];
           final updatedMarkers = {
             ...state.markers,
@@ -63,8 +57,7 @@ class HomeCubit extends Cubit<HomeState> {
           };
 
           emit(state.copyWith(routePoints: updatedPoints, markers: updatedMarkers));
-
-          await repository.saveRoute(updatedPoints);
+          await _repository.saveRoute(updatedPoints);
         }
       }
     });
@@ -77,21 +70,26 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<String> _getAddress(double lat, double lng) async {
+  Future<RoutePoint> _getRoutePoint(double lat, double lng) async {
     final placemarks = await placemarkFromCoordinates(lat, lng);
     final p = placemarks.first;
-    return '${p.street}, ${p.subLocality}, ${p.administrativeArea}, ${p.subAdministrativeArea}, ${p.postalCode}, ${p.country}';
+    return RoutePoint(
+      latitude: lat,
+      longitude: lng,
+      address: '${p.street}, ${p.subLocality}, ${p.administrativeArea}, ${p.postalCode}',
+      title: '${p.subAdministrativeArea}, ${p.country}',
+    );
   }
 
-  void startTracking() {
-    _configureBackgroundLocation();
+  Future<void> startTracking() async {
+    await _startBackgroundLocation();
     emit(state.copyWith(isTracking: true));
   }
 
   void stopTracking() => emit(state.copyWith(isTracking: false));
 
-  Future<void> loadRoute() async {
-    final points = await repository.loadRoute();
+  Future<void> _loadRoute() async {
+    final points = await _repository.loadRoute();
     final markers =
         points
             .map(
@@ -106,7 +104,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> resetRoute() async {
-    await repository.clearRoute();
+    await _repository.clearRoute();
     emit(state.copyWith(routePoints: [], markers: {}));
   }
 
